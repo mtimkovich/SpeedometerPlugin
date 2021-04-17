@@ -6,8 +6,7 @@ using namespace std;
 
 BAKKESMOD_PLUGIN(Speedometer, "Speedometer", "0.1", PLUGINTYPE_FREEPLAY)
 
-void Speedometer::onLoad()
-{
+void Speedometer::onLoad() {
     useMetric = make_shared<bool>(false);
 
     cvarManager->registerCvar("Speedometer_Metric", "0", "Show speed in KPH or MPH")
@@ -30,7 +29,7 @@ void Speedometer::onLoad()
     gameWrapper->RegisterDrawable(bind(&Speedometer::Render, this, std::placeholders::_1));
 }
 
-void Speedometer::onUnload(){}
+void Speedometer::onUnload() {}
 
 string toMph(float gameSpeed) {
     return to_string((int) (gameSpeed / 44.704)) + " mph";
