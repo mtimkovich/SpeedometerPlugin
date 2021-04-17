@@ -7,8 +7,9 @@ An unobtrusive speedometer for Rocket League to remind you to go fast. 🌠
 ## Installation
 
 1. Download the [latest release][release].
-2. Copy `Speedometer.dll` to `/plugins` your BakkesMod folder.
-3. _(Optional)_ You may need to copy the `speedometer.set` file to `/plugins/settings` if settings
+   1. Alternatively—if you're cracked—you can [compile your own `.dll`][compile] using the steps below.
+3. Copy `Speedometer.dll` to `/plugins` your BakkesMod folder.
+4. _(Optional)_ You may need to copy the `speedometer.set` file to `/plugins/settings` if settings
    aren't showing up in the `Plugins` tab.
 5. Open RL and BakkesMod.
 6. Open the BM console (`~`) and run:
@@ -39,6 +40,7 @@ cl /LD -I bakkesmodsdk/include/ bakkesmodsdk/lib/pluginsdk.lib Speedometer.cpp
 - [ ] Calculate per game metrics (mean and stdev) [#1][1].
 
 [release]: https://github.com/mtimkovich/SpeedometerPlugin/releases
+[compile]: https://github.com/mtimkovich/SpeedometerPlugin#compiling
 [vs]: https://visualstudio.microsoft.com/
 [bakkessdk]: https://github.com/bakkesmodorg/BakkesModSDK
 [1]: https://github.com/mtimkovich/SpeedometerPlugin/issues/1
