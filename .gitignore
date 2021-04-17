@@ -5,3 +5,7 @@ x64/
 
 #Files
 *.user
+*.dll
+*.lib
+*.exp
+*.obj

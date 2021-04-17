@@ -15,6 +15,7 @@ public:
 	void onUnload() override;
 
     Vector2 textPosition(CanvasWrapper canvas);
-    void drawInt(CanvasWrapper canvas, int number);
+    float Speedometer::getCarSpeed();
+    void drawText(CanvasWrapper canvas, std::string text);
 	void Render(CanvasWrapper canvas);
 };

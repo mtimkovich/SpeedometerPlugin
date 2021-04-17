@@ -4,7 +4,7 @@
 
 using namespace std;
 
-BAKKESMOD_PLUGIN(Speedometer, "Show car speed", "0.1", PLUGINTYPE_FREEPLAY)
+BAKKESMOD_PLUGIN(Speedometer, "Speedometer", "0.1", PLUGINTYPE_FREEPLAY)
 
 void Speedometer::onLoad()
 {
@@ -15,10 +15,10 @@ void Speedometer::onLoad()
 
 	xPos = make_shared<int>(0);
 	yPos = make_shared<int>(0);
-	cvarManager->registerCvar("Speedometer_Position", "25", "Horizontal position of speedometer",
-            true, true, 0, true, 1920).bindTo(xPos);
-	cvarManager->registerCvar("Speedometer_Position", "245", "Vertical position of speedometer",
-            true, true, 0, true, 1080).bindTo(yPos);
+    cvarManager->registerCvar("Speedometer_X_Position", "25", "X position",
+            true, true, 0, true, 2560).bindTo(xPos);
+    cvarManager->registerCvar("Speedometer_Y_Position", "245", "Y position",
+            true, true, 0, true, 1440).bindTo(yPos);
 
     gameWrapper->HookEvent(
             "Function GameEvent_Soccar_TA.ReplayPlayback.BeginState",
@@ -32,54 +32,55 @@ void Speedometer::onLoad()
 
 void Speedometer::onUnload(){}
 
-int toMph(float gameSpeed) {
-    return (int) (gameSpeed / 44.704);
+string toMph(float gameSpeed) {
+    return to_string((int) (gameSpeed / 44.704)) + " mph";
 }
 
-int toKph(float gameSpeed) {
-    return (int) (gameSpeed * 0.036);
+string toKph(float gameSpeed) {
+    return to_string((int) (gameSpeed * 0.036)) + " kph";
 }
 
-Vector2 Speedometer::textPosition(CanvasWrapper canvas) {
-	float SCREEN_WIDTH = canvas.GetSize().X;
-	float SCREEN_HEIGHT = canvas.GetSize().Y;
-
-	float relativeHeight = SCREEN_HEIGHT / 1080.f;
-	float boxHeight = 40.f * relativeHeight;
-
-    return Vector2{*xPos, *yPos};
-}
-
-// All draw functions live here. Abstract away from this as much as possible.
-void Speedometer::drawInt(CanvasWrapper canvas, int number) {
+// All draw methods live here.
+void Speedometer::drawText(CanvasWrapper canvas, string text) {
     canvas.SetColor(255, 255, 255, 255);
-    canvas.SetPosition(textPosition(canvas));
-    string output = "Speed: " + to_string(number) + " mph";
-    canvas.DrawString(output);
+    canvas.SetPosition(Vector2{*xPos, *yPos});
+    canvas.DrawString("Speed: " + text);
 }
 
-void Speedometer::Render(CanvasWrapper canvas) {
-    // Checks whether we should render.
+// Get the car's speed, or -1 if we don't want to render.
+float Speedometer::getCarSpeed() {
 	CameraWrapper camera = gameWrapper->GetCamera();
 
 	if (isInGoalReplay || camera.IsNull()) {
-		return;
+		return -1;
 	}
 
 	PriWrapper target = PriWrapper(
             reinterpret_cast<std::uintptr_t>(
                 gameWrapper->GetCamera().GetViewTarget().PRI));
 	if (target.IsNull()) {
-		return;
+		return -1;
 	}
 
 	CarWrapper car = target.GetCar();
     if (car.IsNull()) {
+        return -1;
+    }
+
+	return car.GetVelocity().magnitude();
+}
+
+void Speedometer::Render(CanvasWrapper canvas) {
+    float carSpeed = getCarSpeed();
+    if (carSpeed == -1) {
         return;
     }
 
-	float carSpeed = car.GetVelocity().magnitude();
+    string text = toMph(carSpeed);
 
-    int humanSpeed = toMph(carSpeed);
-    drawInt(canvas, humanSpeed);
+    if (*useMetric) {
+        text = toKph(carSpeed);
+    }
+
+    drawText(canvas, text);
 }
