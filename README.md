@@ -1,6 +1,6 @@
 # Speedometer for BakkesMod
 
-An unobtrusive speedometer for Rocket League to remind you to go fast.
+An unobtrusive speedometer for Rocket League to remind you to go fast. 🌠
 
 ## Installation
 
@@ -20,7 +20,7 @@ An unobtrusive speedometer for Rocket League to remind you to go fast.
 
 ### Steps
 
-1. Open "x64 Native Tools Command Prompt for VS 2019".
+1. Open `x64 Native Tools Command Prompt for VS 2019`.
 2. Use the path to the BakkesModSDK in the command below. This will either be in your BakkesMod
 folder or cloned from the [repo][bakkessdk].
 
