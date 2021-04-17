@@ -8,9 +8,10 @@ An unobtrusive speedometer for Rocket League to remind you to go fast. 🌠
 
 1. Download the [latest release][release].
 2. Copy `Speedometer.dll` to `/plugins` your BakkesMod folder.
-3. (Optional) You may need to copy the `speedometer.set` file to `/plugins/settings`.
-4. Open RL and BakkesMod.
-5. Open the BM console (`~`) and run:
+3. _(Optional)_ You may need to copy the `speedometer.set` file to `/plugins/settings` if settings
+   aren't showing up in the `Plugins` tab.
+5. Open RL and BakkesMod.
+6. Open the BM console (`~`) and run:
     - `plugin load speedometer`
     - `cl_settings_refreshplugins`
 
