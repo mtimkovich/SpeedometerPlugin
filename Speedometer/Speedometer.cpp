@@ -4,7 +4,7 @@
 
 using namespace std;
 
-BAKKESMOD_PLUGIN(Speedometer, "Show car speed", "1.3", PLUGINTYPE_FREEPLAY)
+BAKKESMOD_PLUGIN(Speedometer, "Show car speed", "0.1", PLUGINTYPE_FREEPLAY)
 
 void Speedometer::onLoad()
 {
@@ -33,32 +33,32 @@ int toKph(float gameSpeed) {
     return (int) (gameSpeed * 0.036);
 }
 
-Vector textPosition(CanvasWrapper canvas) {
+Vector2 textPosition(CanvasWrapper canvas) {
 	float SCREEN_WIDTH = canvas.GetSize().X;
 	float SCREEN_HEIGHT = canvas.GetSize().Y;
 
-	float positionPerc = *prefPosition / 100.f;
+	float startPosition = *prefPosition / 100.f;
 
 	float relativeHeight = SCREEN_HEIGHT / 1080.f;
 	float boxHeight = 40.f * relativeHeight;
 
-    Vector textPos = Vector2{
-        startPosition.X + boxSize.X + 5,
+    return Vector2{
+        startPosition.X + boxHeight + 5,
         startPosition.Y + (int) (10.f * relativeHeight)
     };
 }
 
 // All draw functions live here. Abstract away from this as much as possible.
-void drawInt(int number, CanvasWrapper canvas) {
-    string output = format("Speed: {} mph", number);
-
+void drawInt(CanvasWrapper canvas, int number) {
     // White
     canvas.SetColor(255, 255, 255, 255);
     canvas.SetPosition(textPosition(canvas));
+    string output = "Speed: " + to_string(number) + " mph";
     canvas.DrawString(output);
 }
 
 // Checks whether we should render on this frame.
+// TODO: This should return the car.
 bool do_render() {
 	CameraWrapper camera = gameWrapper->GetCamera();
 
