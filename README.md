@@ -36,9 +36,9 @@ cl /LD -I bakkesmodsdk/include/ bakkesmodsdk/lib/pluginsdk.lib Speedometer.cpp
 - [x] Show in-game car speed.
 - [x] Adjustable position.
 - [x] Metric option.
-- [ ] Fix crash when leaving a game.
-- [ ] Calculate per game metrics (mean and stdev).
+- [ ] Calculate per game metrics (mean and stdev) [#1][1].
 
 [release]: https://github.com/mtimkovich/SpeedometerPlugin/releases
 [vs]: https://visualstudio.microsoft.com/
 [bakkessdk]: https://github.com/bakkesmodorg/BakkesModSDK
+[1]: https://github.com/mtimkovich/SpeedometerPlugin/issues/1
