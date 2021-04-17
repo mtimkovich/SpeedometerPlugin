@@ -2,6 +2,8 @@
 
 An unobtrusive speedometer for Rocket League to remind you to go fast. 🌠
 
+![Preview](https://raw.githubusercontent.com/mtimkovich/SpeedometerPlugin/main/preview.png)
+
 ## Installation
 
 1. Download the [latest release][release].
