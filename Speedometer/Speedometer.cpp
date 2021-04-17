@@ -70,7 +70,19 @@ float Speedometer::getCarSpeed() {
 	return car.GetVelocity().magnitude();
 }
 
+bool validGameState(shared_ptr<GameWrapper> gameWrapper) {
+    bool freeplay = gameWrapper->IsInFreeplay();
+    bool training = gameWrapper->IsInCustomTraining();
+    bool online = gameWrapper->IsInOnlineGame();
+
+    return freeplay || training || online;
+}
+
 void Speedometer::Render(CanvasWrapper canvas) {
+    if (!validGameState(gameWrapper)) {
+        return;
+    }
+
     float carSpeed = getCarSpeed();
     if (carSpeed == -1) {
         return;
