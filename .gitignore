@@ -9,3 +9,5 @@ x64/
 *.lib
 *.exp
 *.obj
+/target
+Cargo.lock
