@@ -1,7 +1,6 @@
 #include "Speedometer.h"
 #include <sstream>
 #include "bakkesmod/wrappers/includes.h"
-/* #include "bakkesmod/wrappers/arraywrapper.h" */
 
 using namespace std;
 
@@ -21,14 +20,26 @@ void Speedometer::onLoad() {
     gameWrapper->HookEvent(
             "Function GameEvent_Soccar_TA.ReplayPlayback.EndState",
             [&](string eventName){ isInGoalReplay = false; });
+
     gameWrapper->HookEvent(
             "Function TAGame.GameEvent_TA.PostBeginPlay",
-            [&](string eventName) { samples = 0; });
+            std::bind(&Speedometer::resetAverage, this, std::placeholders::_1));
+    gameWrapper->HookEvent(
+            countdownEvent,
+            std::bind(&Speedometer::resetAverage, this, std::placeholders::_1));
 
     gameWrapper->RegisterDrawable(bind(&Speedometer::Render, this, std::placeholders::_1));
 }
 
 void Speedometer::onUnload() {}
+
+void Speedometer::resetAverage(string eventName) {
+    if (eventName == countdownEvent && !gameWrapper->IsInFreeplay()) {
+        return;
+    }
+
+    samples = 0;
+}
 
 int toMph(float gameSpeed) {
     return (int) (gameSpeed / 44.704);
