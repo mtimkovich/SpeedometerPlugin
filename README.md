@@ -34,7 +34,7 @@ An unobtrusive speedometer for Rocket League to remind you to go fast. 🌠
 folder or cloned from the [repo][bakkessdk].
 
 ```powershell
-cl /LD -I bakkesmodsdk/include/ bakkesmodsdk/lib/pluginsdk.lib Speedometer.cpp
+cl /LD /EHsc -I bakkesmodsdk/include/ bakkesmodsdk/lib/pluginsdk.lib Speedometer.cpp
 ```
 
 ## Roadmap
