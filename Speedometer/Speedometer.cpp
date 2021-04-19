@@ -1,17 +1,13 @@
 #include "Speedometer.h"
+#include <sstream>
 #include "bakkesmod/wrappers/includes.h"
-#include "bakkesmod/wrappers/arraywrapper.h"
+/* #include "bakkesmod/wrappers/arraywrapper.h" */
 
 using namespace std;
 
 BAKKESMOD_PLUGIN(Speedometer, "Speedometer", "0.1", PLUGINTYPE_FREEPLAY)
 
 void Speedometer::onLoad() {
-    useMetric = make_shared<bool>(false);
-
-    cvarManager->registerCvar("Speedometer_Metric", "0", "Show speed in KPH or MPH")
-        .bindTo(useMetric);
-
     xPos = make_shared<int>(0);
     yPos = make_shared<int>(0);
     cvarManager->registerCvar("Speedometer_X_Position", "25", "X position",
@@ -21,29 +17,47 @@ void Speedometer::onLoad() {
 
     gameWrapper->HookEvent(
             "Function GameEvent_Soccar_TA.ReplayPlayback.BeginState",
-            [&](std::string eventName){ isInGoalReplay = true; });
+            [&](string eventName){ isInGoalReplay = true; });
     gameWrapper->HookEvent(
             "Function GameEvent_Soccar_TA.ReplayPlayback.EndState",
-            [&](std::string eventName){isInGoalReplay = false; });
+            [&](string eventName){ isInGoalReplay = false; });
+    gameWrapper->HookEvent(
+            "Function TAGame.GameEvent_TA.PostBeginPlay",
+            [&](string eventName) { samples = 0; });
 
     gameWrapper->RegisterDrawable(bind(&Speedometer::Render, this, std::placeholders::_1));
 }
 
 void Speedometer::onUnload() {}
 
-string toMph(float gameSpeed) {
-    return to_string((int) (gameSpeed / 44.704)) + " mph";
+int toMph(float gameSpeed) {
+    return (int) (gameSpeed / 44.704);
 }
 
-string toKph(float gameSpeed) {
-    return to_string((int) (gameSpeed * 0.036)) + " kph";
+int toKph(float gameSpeed) {
+    return (int) (gameSpeed * 0.036);
+}
+
+string speedOutput(float speed, bool metric) {
+    if (metric) {
+        return to_string(toKph(speed)) + " kph";
+    } else {
+        return to_string(toMph(speed)) + " mph";
+    }
 }
 
 // All draw methods live here.
-void Speedometer::drawText(CanvasWrapper canvas, string text) {
+void Speedometer::drawSpeed(CanvasWrapper canvas, string label, float speed, int index) {
+    const int offset = 20;
+    int y = *yPos + index * offset;
+
     canvas.SetColor(255, 255, 255, 255);
-    canvas.SetPosition(Vector2{*xPos, *yPos});
-    canvas.DrawString("Speed: " + text);
+    canvas.SetPosition(Vector2{*xPos, y});
+
+    string units = speedOutput(speed, gameWrapper->GetbMetric());
+    ostringstream output;
+    output << label << ": " << units;
+    canvas.DrawString(output.str());
 }
 
 // Get the car's speed, or -1 if we don't want to render.
@@ -73,8 +87,21 @@ bool validGameState(shared_ptr<GameWrapper> gameWrapper) {
     bool freeplay = gameWrapper->IsInFreeplay();
     bool training = gameWrapper->IsInCustomTraining();
     bool online = gameWrapper->IsInOnlineGame();
+    bool replay = gameWrapper->IsInReplay();
 
-    return freeplay || training || online;
+    return freeplay || training || online || replay;
+}
+
+void Speedometer::updateAverage(float carSpeed) {
+    samples += 1;
+
+    if (samples == 1) {
+        runningAverage = carSpeed;
+        return;
+    }
+
+    runningAverage -= runningAverage / samples;
+    runningAverage += carSpeed / samples;
 }
 
 void Speedometer::Render(CanvasWrapper canvas) {
@@ -87,11 +114,8 @@ void Speedometer::Render(CanvasWrapper canvas) {
         return;
     }
 
-    string text = toMph(carSpeed);
+    updateAverage(carSpeed);
 
-    if (*useMetric) {
-        text = toKph(carSpeed);
-    }
-
-    drawText(canvas, text);
+    drawSpeed(canvas, "Speed", carSpeed, 0);
+    drawSpeed(canvas, "Average", runningAverage, 1);
 }

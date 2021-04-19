@@ -4,6 +4,11 @@ An unobtrusive speedometer for Rocket League to remind you to go fast. 🌠
 
 ![Preview](https://raw.githubusercontent.com/mtimkovich/SpeedometerPlugin/main/preview.png)
 
+## Features
+
+- Current car speed.
+- Per-game average car speed.
+
 ## Installation
 
 1. Download the [latest release][release].
@@ -38,6 +43,7 @@ cl /LD -I bakkesmodsdk/include/ bakkesmodsdk/lib/pluginsdk.lib Speedometer.cpp
 - [x] Adjustable position.
 - [x] Metric option.
 - [ ] Calculate per game metrics (mean and stdev) [#1][1].
+- [ ] Add average car speeds for each rank to the `README`.
 
 [release]: https://github.com/mtimkovich/SpeedometerPlugin/releases
 [compile]: https://github.com/mtimkovich/SpeedometerPlugin#compiling
