@@ -1,22 +1,27 @@
 use bakkesmod::prelude::*;
-use bakkesmod::{game, console};
+use bakkesmod::{game};
+
+struct Speedometer {
+    in_goal_replay: bool,
+    running_average: f32,
+    samples: u32,
+}
+
+impl Speedometer {
+    fn toggle_replay_state<'a>(&'a mut self) -> Box<(dyn FnMut() + 'a)> {
+    }
+}
 
 #[plugin_init]
 pub fn on_load() {
-    // register a 'notifier' (a console command)
-    console::register_notifier("my_notifier", Box::new(move |params: Vec<String>| {
-        // callback code
-    }));
+    let mut speedometer = Speedometer{
+        in_goal_replay: false,
+        running_average: 0.0,
+        samples: 0,
+    };
 
-    // register a hook on a game event
-    game::hook_event("Function Engine.GameViewportClient.Tick", Box::new(move || {
-        // callback code
-    }));
+    game::hook_event("Function GameEvent_Soccar_TA.ReplayPlayback.BeginState",
+        speedometer.toggle_replay_state());
 
-    // use a normal function instead of a lambda
-    game::hook_event("Function TAGame.Car_TA.ApplyBallImpactForces", Box::new(my_callback));
-}
-
-fn my_callback() {
-    // callback code
+    // speedometer;
 }
