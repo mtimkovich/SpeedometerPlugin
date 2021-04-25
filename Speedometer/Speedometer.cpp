@@ -1,5 +1,7 @@
-#include "Speedometer.h"
+#include <iomanip>
 #include <sstream>
+
+#include "Speedometer.h"
 #include "bakkesmod/wrappers/includes.h"
 
 using namespace std;
@@ -7,6 +9,9 @@ using namespace std;
 BAKKESMOD_PLUGIN(Speedometer, "Speedometer", "0.1", PLUGINTYPE_FREEPLAY)
 
 void Speedometer::onLoad() {
+    useUU = make_shared<bool>(true);
+    cvarManager->registerCvar("Speedometer_Units", "1", "Use Unreal Units per second").bindTo(useUU);
+
     xPos = make_shared<int>(0);
     yPos = make_shared<int>(0);
     cvarManager->registerCvar("Speedometer_X_Position", "25", "X position",
@@ -49,8 +54,12 @@ int toKph(float gameSpeed) {
     return (int) (gameSpeed * 0.036);
 }
 
-string speedOutput(float speed, bool metric) {
-    if (metric) {
+string Speedometer::speedOutput(float speed) {
+    if (*useUU) {
+        stringstream stream;
+        stream << fixed << setprecision(2) << speed << " uu/s";
+        return stream.str();
+    } else if (gameWrapper->GetbMetric()) {
         return to_string(toKph(speed)) + " kph";
     } else {
         return to_string(toMph(speed)) + " mph";
@@ -65,9 +74,8 @@ void Speedometer::drawSpeed(CanvasWrapper canvas, string label, float speed, int
     canvas.SetColor(255, 255, 255, 255);
     canvas.SetPosition(Vector2{*xPos, y});
 
-    string units = speedOutput(speed, gameWrapper->GetbMetric());
     ostringstream output;
-    output << label << ": " << units;
+    output << label << ": " << speedOutput(speed);
     canvas.DrawString(output.str());
 }
 

@@ -11,10 +11,12 @@ private:
 
     const std::string countdownEvent = "Function GameEvent_TA.Countdown.BeginState";
 
+    std::shared_ptr<bool> useUU;
     std::shared_ptr<int> xPos;
     std::shared_ptr<int> yPos;
 
     float getCarSpeed();
+    std::string speedOutput(float);
     void updateAverage(float);
     void resetAverage(std::string);
     void drawSpeed(CanvasWrapper, std::string, float, int);
