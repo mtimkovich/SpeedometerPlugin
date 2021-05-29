@@ -105,10 +105,9 @@ float Speedometer::getCarSpeed() {
 bool validGameState(shared_ptr<GameWrapper> gameWrapper) {
     bool freeplay = gameWrapper->IsInFreeplay();
     bool training = gameWrapper->IsInCustomTraining();
-    bool online = gameWrapper->IsInOnlineGame();
     bool replay = gameWrapper->IsInReplay();
 
-    return freeplay || training || online || replay;
+    return freeplay || training || replay;
 }
 
 void Speedometer::updateAverage(float carSpeed) {
